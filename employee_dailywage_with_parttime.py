@@ -1,81 +1,93 @@
-import random  # importing random modules
-
-print("<------------Calculating EmployeeDailyWage Based on Working Hours------------>\n")
-print("<-------Switch Case------->")
+# Importing random modules
+import random
 
 
-class Employee:
-    """
-           Defining a function name MonthlyWage and declaring variables
-
-        """
-    def __init__(self, wage_per_hour, emp_work_hour, emp_daily_wage, total_monthly_wage, employee_name):
+# Declaring variables
+class EmployeeDetails:
+    def __init__(self, wage_per_hour, emp_work_hour, emp_daily_wage, total_month_wage, emp_total_hour,
+                 emp_total_work_days):
         self.wage_per_hour = wage_per_hour
-        self.emp_daily_wage = emp_daily_wage
         self.emp_work_hour = emp_work_hour
-        self.total_monthly_wage = total_monthly_wage
-        self.employee_name = employee_name
+        self.emp_daily_wage = emp_daily_wage
+        self.total_month_wage = total_month_wage
+        self.emp_total_hour = emp_total_hour
+        self.emp_total_work_days = emp_total_work_days
 
-    # Now checking the employee is present or not
+    # Checking that employee is present for full time , part-time or absent
     def present_for_full_time(self):
-        """
-        this function is set to employee working hours as 8 hrs
-        :return: emp_work_hour
-        """
+        # """
+        #     Description:
+        #         This function is set employee work hours as 8 for full time presence of employee
+        #     Parameter:
+        #         None
+        #     Return:
+        #         Employee Work hours
+        # """
         self.emp_work_hour = 8
         return self.emp_work_hour
 
     def present_for_part_time(self):
         """
-        this function is set to employee working hours as 4 hrs
-        :return: emp_work_hour
+            Description:
+                This function is set employee work hours as 4 for part time presence of employee
+            Parameter:
+                None
+            Return:
+                Employee Work hours
         """
         self.emp_work_hour = 4
         return self.emp_work_hour
 
-    def employee_absent(self):
+    def absent(self):
         """
-        this function is set to employee as absent
-        :return: emp_work_hour
+            Description:
+                This function is set employee work hours as 0 for absence of employee
+            Parameter:
+                None
+            Return:
+                Employee Work hours
         """
         self.emp_work_hour = 0
         return self.emp_work_hour
 
-    def switch_case(self, user_input):
-
+    def switch_case(check):
         """
-        implementing switch case in this function
-        :return: emp_status
+            Description:
+                This function is used for implementing switch case for employee attendance
+            Parameter:
+                This function takes one integer parameter
+            Return:
+                It returns function value based on choice
         """
         switch = {
-            1: self.present_for_full_time,
-            0: self.present_for_part_time
+            1: check.present_for_full_time(),
+            0: check.present_for_part_time(),
         }
-        # self.present_for_full_time
-        return switch.get(user_input)()
+        return switch.get(check, "")
 
-    def employee_daily_wage(self):
-        result = 1
-        for day in range(20):
-            check = random.randint(0, 2)
-            if check == 2:
-                result = self.employee_absent()
-            elif check == 1:
-                result = self.present_for_full_time()
+        while check.emp_total_hour <= 100 and check.emp_total_work_days < 20:
+            check = random.randint(0, 1)
+            if not check:
+                result = check.absent()
             else:
-                result = self.present_for_part_time()
+                check = random.randint(0, 1)
+                result = check.switch_case(check)  # Calling function for cases
+            print(result)
+            if result == 8 or result == 4:
+                check.emp_total_work_days += 1
+            emp_daily_wage = result * check.wage_per_hour  # Calculating employee daily wage based on work hours
+            check.total_month_wage += emp_daily_wage  # Adding daily wage to total wages
+            check.emp_total_hour += result
 
-        print(result * self.wage_per_hour)
-        return result * self.wage_per_hour
-
-    def emp_monthly_total(self):
-        self.total_monthly_wage += self.emp_daily_wage
-        print(self.total_monthly_wage)
-        return self.total_monthly_wage
+            if check.emp_total_hour > 100:  # Checking that hours are more than 100 or not
+                a = check.emp_total_hour - 100
+                check.emp_total_hour -= a
+                wage = a * check.wage_per_hour  # Calculate extra hours wage
+                check.total_month_wage -= wage  # Minus extra hours wage from emp total wage
+                return check.total_month_wage
 
 
 if __name__ == '__main__':
-    daily_total_wage = Employee(20, 0, 5, 0, 0)
-    data = daily_total_wage.emp_monthly_total()
-    print(data)
-    # Calculate the employee daily wage using random result
+    employee_wage = EmployeeDetails(20, 8, 160, 3200, 160, 20)
+    employee_wage.switch_case()
+
