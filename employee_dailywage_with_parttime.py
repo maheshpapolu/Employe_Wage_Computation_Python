@@ -1,93 +1,61 @@
-# Importing random modules
 import random
+import logging
+
+logging.basicConfig(filename='app.log', filemode='w', format='%(name)s - %(levelness)s - %(message)s')
+logging.warning('This will get logged to a file')
 
 
-# Declaring variables
-class EmployeeDetails:
-    def __init__(self, wage_per_hour, emp_work_hour, emp_daily_wage, total_month_wage, emp_total_hour,
-                 emp_total_work_days):
-        self.wage_per_hour = wage_per_hour
-        self.emp_work_hour = emp_work_hour
-        self.emp_daily_wage = emp_daily_wage
-        self.total_month_wage = total_month_wage
-        self.emp_total_hour = emp_total_hour
-        self.emp_total_work_days = emp_total_work_days
+class ComputeEmployeeWage:
+    IS_FULL_TIME = 1
+    IS_PART_TIME = 2
+    emp_wage_per_month = 0
 
-    # Checking that employee is present for full time , part-time or absent
-    def present_for_full_time(self):
-        # """
-        #     Description:
-        #         This function is set employee work hours as 8 for full time presence of employee
-        #     Parameter:
-        #         None
-        #     Return:
-        #         Employee Work hours
-        # """
-        self.emp_work_hour = 8
-        return self.emp_work_hour
+    def __init__(self, company, emp_rate, num_of_days, max_hours):
+        self.company = company
+        self.emp_rate = emp_rate
+        self.num_of_days = num_of_days
+        self.max_hours = max_hours
+        self.dict_ = {}
 
-    def present_for_part_time(self):
+    def calculate_employee_wage_for_company(self):
         """
-            Description:
-                This function is set employee work hours as 4 for part time presence of employee
-            Parameter:
-                None
-            Return:
-                Employee Work hours
+        used to calculate employee wage for company
+        :return:  employee wage per month
         """
-        self.emp_work_hour = 4
-        return self.emp_work_hour
 
-    def absent(self):
+        total_emp_hours = 0
+        total_working_days = 0
+        while total_emp_hours <= self.max_hours and total_working_days < self.num_of_days:
+            total_working_days += total_working_days
+            emp_check = int(random.randint(0, 2))
+            emp_hrs_dict = {self.IS_FULL_TIME: 8, self.IS_PART_TIME: 4, 0: 0}
+            emp_hrs_dict.get(emp_check)
+            total_emp_hours += emp_hrs_dict.get(emp_check)
+            emp_wage_per_day = emp_hrs_dict.get(emp_check) * self.emp_rate
+            self.emp_wage_per_month += emp_wage_per_day
+
+        return self.emp_wage_per_month
+
+    def display(self):
         """
-            Description:
-                This function is set employee work hours as 0 for absence of employee
-            Parameter:
-                None
-            Return:
-                Employee Work hours
+        used for display computed wage
+        :return:company name
         """
-        self.emp_work_hour = 0
-        return self.emp_work_hour
-
-    def switch_case(check):
-        """
-            Description:
-                This function is used for implementing switch case for employee attendance
-            Parameter:
-                This function takes one integer parameter
-            Return:
-                It returns function value based on choice
-        """
-        switch = {
-            1: check.present_for_full_time(),
-            0: check.present_for_part_time(),
-        }
-        return switch.get(check, "")
-
-        while check.emp_total_hour <= 100 and check.emp_total_work_days < 20:
-            check = random.randint(0, 1)
-            if not check:
-                result = check.absent()
-            else:
-                check = random.randint(0, 1)
-                result = check.switch_case(check)  # Calling function for cases
-            print(result)
-            if result == 8 or result == 4:
-                check.emp_total_work_days += 1
-            emp_daily_wage = result * check.wage_per_hour  # Calculating employee daily wage based on work hours
-            check.total_month_wage += emp_daily_wage  # Adding daily wage to total wages
-            check.emp_total_hour += result
-
-            if check.emp_total_hour > 100:  # Checking that hours are more than 100 or not
-                a = check.emp_total_hour - 100
-                check.emp_total_hour -= a
-                wage = a * check.wage_per_hour  # Calculate extra hours wage
-                check.total_month_wage -= wage  # Minus extra hours wage from emp total wage
-                return check.total_month_wage
+        print("Company Name= {}".format(self.company))
+        print("Employee Wage Per Month {}".format(self.emp_wage_per_month))
+        return self.company
 
 
-if __name__ == '__main__':
-    employee_wage = EmployeeDetails(20, 8, 160, 3200, 160, 20)
-    employee_wage.switch_case()
+if __name__ == "__main__":
+    try:
+        company_name = input("enter the company name")
+        emp_rate = int(input("Enter Employee rate"))
+        num_of_days = int(input("Enter the Number of Days"))
+        max_hours = int(input("Enter the Max Hours"))
+        company = ComputeEmployeeWage(company_name, emp_rate, num_of_days, max_hours)
+        company.calculate_employee_wage_for_company()
+        company.display()
 
+    except Exception as e:
+        print(e)
+        logging.error(e)
